@@ -103,6 +103,17 @@ it.layer(TestLayer)("CheckpointStore.layer", (it) => {
       }),
     );
 
+    it.effect("returns false for an empty .git directory", () =>
+      Effect.gen(function* () {
+        const tmp = yield* makeTmpDir();
+        const fileSystem = yield* FileSystem.FileSystem;
+        yield* fileSystem.makeDirectory(NodePath.join(tmp, ".git"));
+        const checkpointStore = yield* CheckpointStore.CheckpointStore;
+
+        expect(yield* checkpointStore.isGitRepository(tmp)).toBe(false);
+      }),
+    );
+
     it.effect("returns true when a Git repository is detected", () =>
       Effect.gen(function* () {
         const tmp = yield* makeTmpDir();
